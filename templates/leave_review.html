@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Оставить отзыв - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .review-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .review-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .review-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--border);
+    }
+    
+    .review-title {
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .reviewee-info {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+    }
+    
+    .reviewee-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: var(--bg);
+        margin: 0 auto var(--spacing-sm);
+    }
+    
+    .reviewee-name {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .reviewee-role {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+    
+    .task-info {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .task-info-title {
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text);
+    }
+    
+    .task-info-description {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .rating-input {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .star-option {
+        position: relative;
+    }
+    
+    .star-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .star-label {
+        font-size: 48px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #E0E0E0;
+    }
+    
+    .star-option input[type="radio"]:checked ~ .star-label,
+    .star-option:hover .star-label {
+        color: #FFD700;
+        transform: scale(1.2);
+    }
+    
+    .star-option input[type="radio"]:checked ~ .star-label {
+        animation: bounce 0.5s;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: scale(1.2); }
+        50% { transform: scale(1.4); }
+    }
+    
+    .rating-description {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-textarea {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+    
+    .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: var(--spacing-xs);
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+    
+    .btn-submit {
+        flex: 1;
+    }
+    
+    @media (max-width: 768px) {
+        .rating-input {
+            gap: 4px;
+        }
+        
+        .star-label {
+            font-size: 36px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <div class="review-card">
+        <div class="review-header">
+            <h1 class="review-title">⭐ Оставить отзыв</h1>
+            <p style="color: var(--text-secondary);">
+                Оцените работу и оставьте комментарий
+            </p>
+        </div>
+        
+        <div class="reviewee-info">
+            <div class="reviewee-avatar">
+                {{ reviewee.name[0].upper() }}
+            </div>
+            <div class="reviewee-name">{{ reviewee.name }}</div>
+            <div class="reviewee-role">
+                {% if reviewee.id == task.executor_id %}
+                    Исполнитель задания
+                {% else %}
+                    Заказчик
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="task-info">
+            <div class="task-info-title">📋 Задание: {{ task.title }}</div>
+            <div class="task-info-description">{{ task.description[:100] }}{% if task.description|length > 100 %}...{% endif %}</div>
+        </div>
+        
+        <form method="POST" action="{{ url_for('reviews.leave_review', task_id=task.id) }}">
+            <div class="form-group">
+                <label class="form-label">Оценка *</label>
+                <div class="rating-input">
+                    {% for i in range(1, 6) %}
+                    <div class="star-option">
+                        <input 
+                            type="radio" 
+                            id="rating_{{ i }}" 
+                            name="rating" 
+                            value="{{ i }}"
+                            {% if rating == i %}checked{% endif %}
+                            required
+                        >
+                        <label for="rating_{{ i }}" class="star-label">★</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="rating-description">
+                    1 звезда - Очень плохо | 5 звезд - Отлично
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="comment" class="form-label">Комментарий (необязательно)</label>
+                <textarea 
+                    id="comment" 
+                    name="comment" 
+                    class="form-textarea" 
+                    placeholder="Расскажите о вашем опыте работы..."
+                    maxlength="1000"
+                >{{ comment if comment else '' }}</textarea>
+                <p class="form-hint">Максимум 1000 символов</p>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('tasks.task_detail', task_id=task.id) }}" class="btn btn-secondary">
+                    ← Отмена
+                </a>
+                <button type="submit" class="btn btn-primary btn-submit">
+                    ✓ Отправить отзыв
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

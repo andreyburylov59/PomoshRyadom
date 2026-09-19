@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block title %}Все задания - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .tasks-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .tasks-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .tasks-title {
+        color: var(--primary-green);
+    }
+    
+    .create-task-btn {
+        white-space: nowrap;
+    }
+    
+    .filters-panel {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .filter-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text);
+    }
+    
+    .filter-select {
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .filter-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+        justify-content: flex-end;
+    }
+    
+    .tasks-count {
+        padding: var(--spacing-sm);
+        background-color: var(--bg-secondary);
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+        font-weight: 600;
+    }
+    
+    .tasks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .task-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-md);
+        box-shadow: 0 2px 8px var(--shadow);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    
+    .task-card:hover {
+        box-shadow: 0 4px 16px var(--shadow);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+    
+    .task-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .task-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .task-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-green);
+        white-space: nowrap;
+    }
+    
+    .task-description {
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-sm);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .task-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .task-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .badge-category {
+        background-color: var(--primary-blue);
+        color: var(--bg);
+    }
+    
+    .badge-district {
+        background-color: var(--bg-secondary);
+        color: var(--text);
+    }
+    
+    .badge-urgent {
+        background-color: var(--danger-red);
+        color: var(--bg);
+    }
+    
+    .badge-planned {
+        background-color: var(--primary-green);
+        color: var(--bg);
+    }
+    
+    .badge-skills {
+        background-color: var(--warning-yellow);
+        color: var(--text);
+    }
+    
+    .task-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--border);
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+    }
+    
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .filter-status {
+        margin-top: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+        min-height: 24px;
+    }
+    
+    .filter-status.loading {
+        background-color: rgba(33, 150, 243, 0.1);
+        color: var(--primary-blue);
+    }
+    
+    .filter-status.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--primary-green);
+    }
+    
+    .filter-status.error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: var(--danger-red);
+    }
+    
+    @media (max-width: 768px) {
+        .tasks-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="tasks-header">
+        <h1 class="tasks-title">Все задания</h1>
+        {% if current_user.is_authenticated and current_user.role in ['customer', 'both'] %}
+            <a href="{{ url_for('tasks.create_task') }}" class="btn btn-primary create-task-btn">
+                + Создать задание
+            </a>
+        {% endif %}
+    </div>
+    
+    <div class="filters-panel">
+        <form method="GET" action="{{ url_for('tasks.tasks_list') }}" id="filters-form">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Район</label>
+                    <select name="district" class="filter-select">
+                        <option value="">Все районы</option>
+                        <option value="Центральный" {% if district == 'Центральный' %}selected{% endif %}>Центральный</option>
+                        <option value="Северный" {% if district == 'Северный' %}selected{% endif %}>Северный</option>
+                        <option value="Южный" {% if district == 'Южный' %}selected{% endif %}>Южный</option>
+                        <option value="Западный" {% if district == 'Западный' %}selected{% endif %}>Западный</option>
+                        <option value="Восточный" {% if district == 'Восточный' %}selected{% endif %}>Восточный</option>
+                        <option value="Ленинский" {% if district == 'Ленинский' %}selected{% endif %}>Ленинский</option>
+                        <option value="Октябрьский" {% if district == 'Октябрьский' %}selected{% endif %}>Октябрьский</option>
+                        <option value="Советский" {% if district == 'Советский' %}selected{% endif %}>Советский</option>
+                        <option value="Железнодорожный" {% if district == 'Железнодорожный' %}selected{% endif %}>Железнодорожный</option>
+                        <option value="Заречный" {% if district == 'Заречный' %}selected{% endif %}>Заречный</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Категория</label>
+                    <select name="category" class="filter-select">
+                        <option value="">Все категории</option>
+                        <option value="уборка" {% if category == 'уборка' %}selected{% endif %}>Уборка</option>
+                        <option value="доставка" {% if category == 'доставка' %}selected{% endif %}>Доставка</option>
+                        <option value="мастер" {% if category == 'мастер' %}selected{% endif %}>Мастер</option>
+                        <option value="сантехника" {% if category == 'сантехника' %}selected{% endif %}>Сантехника</option>
+                        <option value="электрика" {% if category == 'электрика' %}selected{% endif %}>Электрика</option>
+                        <option value="няня" {% if category == 'няня' %}selected{% endif %}>Няня</option>
+                        <option value="репетитор" {% if category == 'репетитор' %}selected{% endif %}>Репетитор</option>
+                        <option value="переезд" {% if category == 'переезд' %}selected{% endif %}>Переезд</option>
+                        <option value="сборка мебели" {% if category == 'сборка мебели' %}selected{% endif %}>Сборка мебели</option>
+                        <option value="компьютерная помощь" {% if category == 'компьютерная помощь' %}selected{% endif %}>Компьютерная помощь</option>
+                        <option value="другое" {% if category == 'другое' %}selected{% endif %}>Другое</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Срочность</label>
+                    <select name="urgency" class="filter-select">
+                        <option value="">Любая</option>
+                        <option value="срочно" {% if urgency == 'срочно' %}selected{% endif %}>Срочно</option>
+                        <option value="планово" {% if urgency == 'планово' %}selected{% endif %}>Планово</option>
+                        <option value="навыки" {% if urgency == 'навыки' %}selected{% endif %}>Навыки</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Сортировка</label>
+                    <select name="sort_by" class="filter-select">
+                        <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Сначала новые</option>
+                        <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Сначала старые</option>
+                        <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+                        <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Цена: по возрастанию</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-actions">
+                <a href="{{ url_for('tasks.tasks_list') }}" class="btn btn-secondary">Сбросить</a>
+                <button type="submit" class="btn btn-primary">Применить фильтры</button>
+            </div>
+        </form>
+        
+        <div style="margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border);">
+            <div class="filter-group">
+                <label class="filter-label">📍 Фильтр по расстоянию</label>
+                <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                    <input type="number" id="max-distance" class="filter-select" value="3" min="0.5" max="50" step="0.5" style="width: 100px;">
+                    <span style="font-size: 14px;">км</span>
+                    <button type="button" id="filter-by-distance-btn" class="btn btn-primary" style="flex: 1;">
+                        Показать рядом
+                    </button>
+                    <button type="button" id="reset-distance-filter-btn" class="btn btn-secondary">
+                        Сбросить
+                    </button>
+                </div>
+                <div id="distance-filter-status" class="filter-status"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tasks-count">
+        Найдено заданий: {{ total_tasks }}
+    </div>
+    
+    {% if tasks %}
+        <div class="tasks-grid">
+            {% for task in tasks %}
+                <a href="{{ url_for('tasks.task_detail', task_id=task.id) }}" class="task-card" 
+                   data-latitude="{{ task.latitude if task.latitude else '' }}" 
+                   data-longitude="{{ task.longitude if task.longitude else '' }}">
+                    <div class="task-card-header">
+                        <h2 class="task-title">{{ task.title }}</h2>
+                        <div class="task-price">{{ task.price }} ₽</div>
+                    </div>
+                    
+                    <p class="task-description">{{ task.description }}</p>
+                    
+                    <div class="task-meta">
+                        <span class="task-badge badge-category">{{ task.category }}</span>
+                        <span class="task-badge badge-district">📍 {{ task.district }}</span>
+                        {% if task.urgency == 'срочно' %}
+                            <span class="task-badge badge-urgent">⚡ Срочно</span>
+                        {% elif task.urgency == 'планово' %}
+                            <span class="task-badge badge-planned">📅 Планово</span>
+                        {% else %}
+                            <span class="task-badge badge-skills">🎯 Навыки</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="task-footer">
+                        <span>Заказчик: {{ task.creator.name }}</span>
+                        <span>{{ task.created_at.strftime('%d.%m.%Y') }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <h2>Заданий не найдено</h2>
+            <p>Попробуйте изменить фильтры или создайте первое задание</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
+{% endblock %}

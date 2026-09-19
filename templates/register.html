@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .register-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .register-title {
+        text-align: center;
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+    
+    .form-select {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+        background-color: var(--bg);
+    }
+    
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+    
+    .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: var(--spacing-xs);
+    }
+    
+    .role-options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .role-option {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-sm);
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .role-option:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    .role-option input[type="radio"] {
+        margin-right: var(--spacing-sm);
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .role-option input[type="radio"]:checked + .role-label {
+        color: var(--primary-green);
+        font-weight: 600;
+    }
+    
+    .role-label {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .role-description {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: var(--spacing-xs);
+    }
+    
+    .btn-register {
+        width: 100%;
+        margin-top: var(--spacing-md);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: var(--spacing-md);
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <h1 class="register-title">Регистрация</h1>
+        
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="form-group">
+                <label for="name" class="form-label">Ваше имя *</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    class="form-input" 
+                    placeholder="Введите ваше имя"
+                    value="{{ name if name else '' }}"
+                    required
+                    minlength="2"
+                    maxlength="100"
+                >
+                <p class="form-hint">Как к вам обращаться?</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">Номер телефона *</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    class="form-input" 
+                    placeholder="+7 (XXX) XXX-XX-XX"
+                    value="{{ phone if phone else '' }}"
+                    required
+                >
+                <p class="form-hint">По этому номеру с вами свяжутся</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль *</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Минимум 6 символов"
+                    required
+                    minlength="6"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password_confirm" class="form-label">Подтвердите пароль *</label>
+                <input 
+                    type="password" 
+                    id="password_confirm" 
+                    name="password_confirm" 
+                    class="form-input" 
+                    placeholder="Повторите пароль"
+                    required
+                    minlength="6"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Я хочу *</label>
+                <div class="role-options">
+                    <label class="role-option">
+                        <input 
+                            type="radio" 
+                            name="role" 
+                            value="customer" 
+                            {% if not role or role == 'customer' %}checked{% endif %}
+                        >
+                        <div>
+                            <span class="role-label">🙋 Заказывать услуги</span>
+                            <p class="role-description">Вы сможете создавать заказы</p>
+                        </div>
+                    </label>
+                    
+                    <label class="role-option">
+                        <input 
+                            type="radio" 
+                            name="role" 
+                            value="executor" 
+                            {% if role == 'executor' %}checked{% endif %}
+                        >
+                        <div>
+                            <span class="role-label">💼 Выполнять заказы</span>
+                            <p class="role-description">Вы сможете откликаться на заказы</p>
+                        </div>
+                    </label>
+                    
+                    <label class="role-option">
+                        <input 
+                            type="radio" 
+                            name="role" 
+                            value="both" 
+                            {% if role == 'both' %}checked{% endif %}
+                        >
+                        <div>
+                            <span class="role-label">🤝 И то, и другое</span>
+                            <p class="role-description">Вы сможете и заказывать, и выполнять</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="district" class="form-label">Район (необязательно)</label>
+                <select id="district" name="district" class="form-select">
+                    <option value="">Выберите район</option>
+                    <option value="Центральный" {% if district == 'Центральный' %}selected{% endif %}>Центральный</option>
+                    <option value="Северный" {% if district == 'Северный' %}selected{% endif %}>Северный</option>
+                    <option value="Южный" {% if district == 'Южный' %}selected{% endif %}>Южный</option>
+                    <option value="Западный" {% if district == 'Западный' %}selected{% endif %}>Западный</option>
+                    <option value="Восточный" {% if district == 'Восточный' %}selected{% endif %}>Восточный</option>
+                    <option value="Ленинский" {% if district == 'Ленинский' %}selected{% endif %}>Ленинский</option>
+                    <option value="Октябрьский" {% if district == 'Октябрьский' %}selected{% endif %}>Октябрьский</option>
+                    <option value="Советский" {% if district == 'Советский' %}selected{% endif %}>Советский</option>
+                    <option value="Железнодорожный" {% if district == 'Железнодорожный' %}selected{% endif %}>Железнодорожный</option>
+                    <option value="Заречный" {% if district == 'Заречный' %}selected{% endif %}>Заречный</option>
+                </select>
+                <p class="form-hint">Поможет найти заказы рядом с вами</p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-register">
+                Зарегистрироваться
+            </button>
+        </form>
+        
+        <div class="login-link">
+            <p>Уже есть аккаунт? <a href="{{ url_for('auth.login') }}">Войти</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

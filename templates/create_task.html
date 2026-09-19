@@ -1,0 +1,440 @@
+{% extends "base.html" %}
+
+{% block title %}Создать задание - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .create-task-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .voice-section {
+        background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+        text-align: center;
+        color: var(--bg);
+    }
+    
+    .voice-section-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .voice-section-description {
+        font-size: 16px;
+        margin-bottom: var(--spacing-lg);
+        opacity: 0.9;
+    }
+    
+    .voice-button {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid var(--bg);
+        background-color: #E53935;
+        color: var(--bg);
+        font-size: 48px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto var(--spacing-md);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    
+    .voice-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    .voice-button:active {
+        transform: scale(0.95);
+    }
+    
+    .voice-button.listening {
+        animation: pulse 1.5s infinite;
+        background-color: #C62828;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7);
+        }
+        50% {
+            box-shadow: 0 0 0 20px rgba(229, 57, 53, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+        }
+    }
+    
+    .voice-text {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .voice-status {
+        font-size: 14px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.2);
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .voice-status.success {
+        background-color: rgba(76, 175, 80, 0.3);
+    }
+    
+    .voice-status.error {
+        background-color: rgba(244, 67, 54, 0.3);
+    }
+    
+    .voice-transcript {
+        margin-top: var(--spacing-md);
+        padding: var(--spacing-sm);
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        min-height: 60px;
+        max-height: 120px;
+        overflow-y: auto;
+        text-align: left;
+        font-size: 14px;
+        display: none;
+    }
+    
+    .voice-transcript:not(:empty) {
+        display: block;
+    }
+    
+    .divider {
+        text-align: center;
+        margin: var(--spacing-lg) 0;
+        position: relative;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--border);
+    }
+    
+    .divider-text {
+        background-color: var(--bg);
+        padding: 0 var(--spacing-md);
+        position: relative;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+    
+    .create-task-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .create-task-title {
+        text-align: center;
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .form-input, .form-textarea, .form-select {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+    
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: var(--spacing-xs);
+    }
+    
+    .urgency-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-sm);
+    }
+    
+    .urgency-option {
+        position: relative;
+    }
+    
+    .urgency-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .urgency-label {
+        display: block;
+        padding: var(--spacing-sm);
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .urgency-option input[type="radio"]:checked + .urgency-label {
+        border-color: var(--primary-green);
+        background-color: rgba(76, 175, 80, 0.1);
+        font-weight: 600;
+    }
+    
+    .urgency-label:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    .btn-submit {
+        width: 100%;
+        margin-top: var(--spacing-md);
+    }
+    
+    .location-status {
+        margin-top: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+        min-height: 24px;
+    }
+    
+    .location-status.loading {
+        background-color: rgba(33, 150, 243, 0.1);
+        color: var(--primary-blue);
+    }
+    
+    .location-status.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--primary-green);
+    }
+    
+    .location-status.error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: var(--danger-red);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-task-container">
+    <div class="voice-section">
+        <h2 class="voice-section-title">🎤 Голосовой ввод</h2>
+        <p class="voice-section-description">
+            Нажмите на кнопку и расскажите, что нужно сделать. 
+            Мы автоматически заполним форму!
+        </p>
+        
+        <button type="button" id="voice-button" class="voice-button">
+            <span id="voice-icon">🎤</span>
+        </button>
+        
+        <div id="voice-text" class="voice-text">Начать голосовой ввод</div>
+        <div id="voice-status" class="voice-status"></div>
+        <div id="voice-transcript" class="voice-transcript"></div>
+    </div>
+    
+    <div class="divider">
+        <span class="divider-text">ИЛИ ЗАПОЛНИТЕ ВРУЧНУЮ</span>
+    </div>
+    
+    <div class="create-task-card">
+        <h1 class="create-task-title">Создать задание</h1>
+        
+        <form method="POST" action="{{ url_for('tasks.create_task') }}">
+            <div class="form-group">
+                <label for="title" class="form-label">Название задания *</label>
+                <input 
+                    type="text" 
+                    id="title" 
+                    name="title" 
+                    class="form-input" 
+                    placeholder="Например: Уборка квартиры"
+                    value="{{ title if title else '' }}"
+                    required
+                    minlength="5"
+                    maxlength="200"
+                >
+                <p class="form-hint">Кратко опишите, что нужно сделать</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="description" class="form-label">Описание *</label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    class="form-textarea" 
+                    placeholder="Подробно опишите задание, требования, что нужно сделать..."
+                    required
+                    minlength="10"
+                >{{ description if description else '' }}</textarea>
+                <p class="form-hint">Чем подробнее, тем лучше</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="category" class="form-label">Категория *</label>
+                <select id="category" name="category" class="form-select" required>
+                    <option value="">Выберите категорию</option>
+                    <option value="уборка" {% if category == 'уборка' %}selected{% endif %}>🧹 Уборка</option>
+                    <option value="доставка" {% if category == 'доставка' %}selected{% endif %}>📦 Доставка</option>
+                    <option value="мастер" {% if category == 'мастер' %}selected{% endif %}>🔧 Мастер на час</option>
+                    <option value="сантехника" {% if category == 'сантехника' %}selected{% endif %}>🚰 Сантехника</option>
+                    <option value="электрика" {% if category == 'электрика' %}selected{% endif %}>💡 Электрика</option>
+                    <option value="няня" {% if category == 'няня' %}selected{% endif %}>👶 Няня</option>
+                    <option value="репетитор" {% if category == 'репетитор' %}selected{% endif %}>📚 Репетитор</option>
+                    <option value="переезд" {% if category == 'переезд' %}selected{% endif %}>🚚 Переезд</option>
+                    <option value="сборка мебели" {% if category == 'сборка мебели' %}selected{% endif %}>🛠️ Сборка мебели</option>
+                    <option value="компьютерная помощь" {% if category == 'компьютерная помощь' %}selected{% endif %}>💻 Компьютерная помощь</option>
+                    <option value="другое" {% if category == 'другое' %}selected{% endif %}>📋 Другое</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="price" class="form-label">Цена (₽) *</label>
+                <input 
+                    type="number" 
+                    id="price" 
+                    name="price" 
+                    class="form-input" 
+                    placeholder="500"
+                    value="{{ price if price else '' }}"
+                    required
+                    min="1"
+                    max="1000000"
+                >
+                <p class="form-hint">Укажите сумму, которую готовы заплатить</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="address" class="form-label">Адрес *</label>
+                <input 
+                    type="text" 
+                    id="address" 
+                    name="address" 
+                    class="form-input" 
+                    placeholder="Улица, дом, квартира"
+                    value="{{ address if address else '' }}"
+                    required
+                    minlength="5"
+                    maxlength="255"
+                >
+                <p class="form-hint">Где нужно выполнить задание</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="district" class="form-label">Район *</label>
+                <select id="district" name="district" class="form-select" required>
+                    <option value="">Выберите район</option>
+                    <option value="Центральный" {% if district == 'Центральный' %}selected{% endif %}>Центральный</option>
+                    <option value="Северный" {% if district == 'Северный' %}selected{% endif %}>Северный</option>
+                    <option value="Южный" {% if district == 'Южный' %}selected{% endif %}>Южный</option>
+                    <option value="Западный" {% if district == 'Западный' %}selected{% endif %}>Западный</option>
+                    <option value="Восточный" {% if district == 'Восточный' %}selected{% endif %}>Восточный</option>
+                    <option value="Ленинский" {% if district == 'Ленинский' %}selected{% endif %}>Ленинский</option>
+                    <option value="Октябрьский" {% if district == 'Октябрьский' %}selected{% endif %}>Октябрьский</option>
+                    <option value="Советский" {% if district == 'Советский' %}selected{% endif %}>Советский</option>
+                    <option value="Железнодорожный" {% if district == 'Железнодорожный' %}selected{% endif %}>Железнодорожный</option>
+                    <option value="Заречный" {% if district == 'Заречный' %}selected{% endif %}>Заречный</option>
+                </select>
+                
+                <button type="button" id="detect-location-btn" class="btn btn-secondary" style="margin-top: 8px; width: 100%;">
+                    📍 Определить район автоматически
+                </button>
+                <div id="location-status" class="location-status"></div>
+                
+                <input type="hidden" id="latitude" name="latitude" value="{{ latitude if latitude else '' }}">
+                <input type="hidden" id="longitude" name="longitude" value="{{ longitude if longitude else '' }}">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Срочность *</label>
+                <div class="urgency-options">
+                    <div class="urgency-option">
+                        <input 
+                            type="radio" 
+                            id="urgency_urgent" 
+                            name="urgency" 
+                            value="срочно"
+                            {% if urgency == 'срочно' %}checked{% endif %}
+                        >
+                        <label for="urgency_urgent" class="urgency-label">⚡ Срочно</label>
+                    </div>
+                    
+                    <div class="urgency-option">
+                        <input 
+                            type="radio" 
+                            id="urgency_planned" 
+                            name="urgency" 
+                            value="планово"
+                            {% if not urgency or urgency == 'планово' %}checked{% endif %}
+                        >
+                        <label for="urgency_planned" class="urgency-label">📅 Планово</label>
+                    </div>
+                    
+                    <div class="urgency-option">
+                        <input 
+                            type="radio" 
+                            id="urgency_skills" 
+                            name="urgency" 
+                            value="навыки"
+                            {% if urgency == 'навыки' %}checked{% endif %}
+                        >
+                        <label for="urgency_skills" class="urgency-label">🎯 Навыки</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-submit">
+                Создать задание
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+{% endblock %}

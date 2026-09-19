@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Вход - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-card {
+        width: 100%;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .login-title {
+        text-align: center;
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-green);
+    }
+    
+    .form-checkbox {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .form-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .form-checkbox label {
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .btn-login {
+        width: 100%;
+        margin-top: var(--spacing-md);
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: var(--spacing-md);
+        font-size: 16px;
+    }
+    
+    .login-icon {
+        text-align: center;
+        font-size: 48px;
+        margin-bottom: var(--spacing-md);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-icon">🔐</div>
+        <h1 class="login-title">Вход в систему</h1>
+        
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <div class="form-group">
+                <label for="phone" class="form-label">Номер телефона</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    class="form-input" 
+                    placeholder="+7 (XXX) XXX-XX-XX"
+                    value="{{ phone if phone else '' }}"
+                    required
+                    autofocus
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Введите пароль"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <div class="form-checkbox">
+                    <input 
+                        type="checkbox" 
+                        id="remember" 
+                        name="remember" 
+                        value="true"
+                    >
+                    <label for="remember">Запомнить меня</label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-login">
+                Войти
+            </button>
+        </form>
+        
+        <div class="register-link">
+            <p>Нет аккаунта? <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

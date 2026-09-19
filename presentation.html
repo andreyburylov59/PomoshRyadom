@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Помощь Рядом - Интерактивная Презентация</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .presentation {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: slideIn 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            word-wrap: break-word;
+        }
+
+        h3 {
+            font-size: 20px;
+            margin: 20px 0 15px;
+            color: #34495e;
+            word-wrap: break-word;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+            word-wrap: break-word;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd54f 0%, #ffeb3b 100%);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            word-wrap: break-word;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-size: 14px;
+            border-radius: 8px;
+            word-wrap: break-word;
+        }
+
+        .comparison-table td {
+            padding: 12px 8px;
+            font-size: 14px;
+            background: #f8f9fa;
+            border-left: 4px solid transparent;
+            word-wrap: break-word;
+        }
+
+        .comparison-table tr:hover td {
+            background: #e9ecef;
+            border-left-color: #4CAF50;
+        }
+
+        .comparison-table .winner {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            font-weight: 600;
+            color: #155724;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 100%;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            display: block;
+            height: auto;
+        }
+
+        .screenshot:hover {
+            transform: scale(1.02);
+        }
+
+        .screenshot-caption {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+            word-wrap: break-word;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin-top: 30px;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            word-wrap: break-word;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 20px 50px;
+            font-size: 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .pros, .cons {
+            padding: 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        .pros {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+        }
+
+        .cons {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 5px solid #dc3545;
+        }
+
+        .pros h3, .cons h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros li, .cons li {
+            padding: 10px 0;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+
+        .pros li::before {
+            content: '✅ ';
+            margin-right: 10px;
+        }
+
+        .cons li::before {
+            content: '❌ ';
+            margin-right: 10px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            transition: width 0.3s ease;
+            z-index: 2000;
+        }
+
+        @media (max-width: 768px) {
+            .presentation {
+                padding: 5px;
+            }
+
+            .slide {
+                padding: 20px 15px;
+                min-height: auto;
+                border-radius: 12px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p {
+                font-size: 15px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .feature-icon {
+                font-size: 36px;
+            }
+
+            .feature-title {
+                font-size: 14px;
+            }
+
+            .feature-desc {
+                font-size: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .comparison-table {
+                font-size: 12px;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+
+            .step-list li {
+                padding-left: 45px;
+                font-size: 14px;
+            }
+
+            .step-list li::before {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .pros li, .cons li {
+                font-size: 14px;
+            }
+
+            .navigation {
+                bottom: 10px;
+                right: 10px;
+                gap: 8px;
+            }
+
+            .nav-button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .slide-number {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .logo {
+                font-size: 48px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .cta-button {
+                padding: 16px 32px;
+                font-size: 18px;
+            }
+        }
+
+        .video-placeholder {
+            background: linear-gradient(135deg, #232526, #414345);
+            border-radius: 15px;
+            padding: 80px 40px;
+            text-align: center;
+            color: white;
+            margin: 30px 0;
+        }
+
+        .video-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .video-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 72px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 28px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="presentation">
+        <!-- Слайд 1: Титульный -->
+        <div class="slide">
+            <div class="slide-number">Слайд 1 / 16</div>
+            <div class="logo">🤝</div>
+            <h1 style="text-align: center;">Помощь Рядом</h1>
+            <p class="subtitle">Гиперлокальный P2P маркетплейс бытовых услуг</p>
+            <div style="text-align: center; margin-top: 30px;">
+                <div class="highlight" style="font-size: 20px; display: inline-block; margin-bottom: 15px;">
+                    👵 Для пожилых — просто и понятно
+                </div>
+                <br>
+                <div class="highlight" style="font-size: 20px; display: inline-block;">
+                    💰 Для молодежи — легкий заработок рядом с домом
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 2: Проблема -->
+        <div class="slide">
+            <div class="slide-number">Слайд 2 / 15</div>
+            <h2>😟 Проблема</h2>
+            <p>В России <span class="highlight">30+ миллионов</span> пожилых людей (60+)</p>
+            <p>Только <span class="highlight">1.25 миллиона (4%)</span> пользуются P2P платформами</p>
+            <p style="font-size: 32px; font-weight: 600; margin-top: 40px; color: #e74c3c;">
+                ❌ Почему?
+            </p>
+            <div class="feature-grid" style="margin-top: 40px;">
+                <div class="feature-card">
+                    <span class="feature-icon">😵</span>
+                    <div class="feature-title">Слишком сложно</div>
+                    <div class="feature-desc">Мелкий шрифт, запутанные меню</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💬</span>
+                    <div class="feature-title">Обязательные чаты</div>
+                    <div class="feature-desc">Пожилые не любят переписки</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🚗</span>
+                    <div class="feature-title">Весь город</div>
+                    <div class="feature-desc">Исполнитель может быть за 30 км</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💸</span>
+                    <div class="feature-title">Дорого</div>
+                    <div class="feature-desc">80-150₽ за контакт + подписки</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 3: Решение -->
+        <div class="slide">
+            <div class="slide-number">Слайд 3 / 15</div>
+            <h2>💡 Наше Решение</h2>
+            <p style="margin-bottom: 30px;">
+                <span class="highlight">"Помощь Рядом"</span> — это простой сервис:
+            </p>
+            <p style="margin-bottom: 10px;">
+                👵 <strong>Для пожилых:</strong> простой интерфейс, голосовой ввод, прямые звонки
+            </p>
+            <p style="margin-bottom: 30px;">
+                💼 <strong>Для молодежи:</strong> легкий заработок рядом с домом, без поездок через весь город
+            </p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎙️</span>
+                    <div class="feature-title">Голосовой ввод</div>
+                    <div class="feature-desc">Говорите — форма заполняется автоматически</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📍</span>
+                    <div class="feature-title">Соседи (1-3 км)</div>
+                    <div class="feature-desc">Исполнитель рядом с домом</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📞</span>
+                    <div class="feature-title">Прямые звонки</div>
+                    <div class="feature-desc">Без чатов и переписок</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <div class="feature-title">Дешево</div>
+                    <div class="feature-desc">Всего 50₽ за контакт</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔤</span>
+                    <div class="feature-title">Крупный шрифт</div>
+                    <div class="feature-desc">18-24px, большие кнопки</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-title">Быстро</div>
+                    <div class="feature-desc">Регистрация за 1 минуту</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Главная страница -->
+        <div class="slide">
+            <div class="slide-number">Слайд 4 / 15</div>
+            <h2>🏠 Главная страница</h2>
+            <p>Простой и понятный интерфейс с двумя большими кнопками:</p>
+            <img src="static/screenshots/01_main_page.webp" alt="Главная страница" class="screenshot">
+            <div class="screenshot-caption">
+                ✅ Крупный шрифт • ✅ Большие кнопки • ✅ Понятный дизайн
+            </div>
+            <ul class="step-list">
+                <li><strong>Кнопка "Мне нужна помощь"</strong> — для заказчиков услуг</li>
+                <li><strong>Кнопка "Я хочу заработать"</strong> — для исполнителей</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 5: Список заданий -->
+        <div class="slide">
+            <div class="slide-number">Слайд 5 / 15</div>
+            <h2>📋 Список заданий</h2>
+            <p>Удобные карточки заданий с фильтрами:</p>
+            <img src="static/screenshots/02_tasks_list.webp" alt="Список заданий" class="screenshot">
+            <div class="screenshot-caption">
+                🔍 Фильтры по району, категории, срочности • 📊 Сортировка по дате и цене
+            </div>
+            <ul class="step-list">
+                <li><strong>Фильтр по району</strong> — выберите свой район (1-3 км)</li>
+                <li><strong>Фильтр по категории</strong> — уборка, доставка, сантехника и др.</li>
+                <li><strong>Сортировка</strong> — по дате или цене</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 6: Детали задания -->
+        <div class="slide">
+            <div class="slide-number">Слайд 6 / 15</div>
+            <h2>📝 Детали задания</h2>
+            <p>Вся информация на одной странице:</p>
+            <img src="static/screenshots/03_task_detail.webp" alt="Детали задания" class="screenshot">
+            <div class="screenshot-caption">
+                💰 Цена • 📍 Адрес • 👤 Заказчик • 📞 Контакт (после оплаты)
+            </div>
+            <ul class="step-list">
+                <li><strong>Описание задания</strong> — что нужно сделать</li>
+                <li><strong>Цена и адрес</strong> — сколько заплатят и где</li>
+                <li><strong>Маскированный телефон</strong> — +7 (902) ***-**-45</li>
+                <li><strong>Кнопка "Оплатить контакт"</strong> — 50₽ за полный номер</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 7: Регистрация -->
+        <div class="slide">
+            <div class="slide-number">Слайд 7 / 15</div>
+            <h2>✍️ Регистрация</h2>
+            <p>Простая форма регистрации — всего 1 минута:</p>
+            <img src="static/screenshots/04_registration.webp" alt="Регистрация" class="screenshot">
+            <div class="screenshot-caption">
+                📱 Телефон • 👤 Имя • 🔒 Пароль • 🎭 Роль • 🏘️ Район
+            </div>
+            <ul class="step-list">
+                <li><strong>Имя</strong> — как к вам обращаться</li>
+                <li><strong>Телефон</strong> — в формате +7...</li>
+                <li><strong>Пароль</strong> — для входа в систему</li>
+                <li><strong>Роль</strong> — заказчик, исполнитель или оба</li>
+                <li><strong>Район</strong> — где вы живете</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 8: Голосовой ввод -->
+        <div class="slide">
+            <div class="slide-number">Слайд 8 / 15</div>
+            <h2>🎙️ Уникальная фишка: Голосовой ввод</h2>
+            <p style="font-size: 26px; margin-bottom: 40px;">
+                Самая <span class="highlight">инновационная функция</span>, которой нет у конкурентов!
+            </p>
+            
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 40px; border-radius: 15px; margin: 30px 0;">
+                <h3 style="color: white; text-align: center; margin-bottom: 30px;">Как это работает?</h3>
+                <ul class="step-list" style="color: white;">
+                    <li style="color: white;"><strong>Нажмите большую красную кнопку 🔴</strong></li>
+                    <li style="color: white;"><strong>Скажите:</strong> "Нужна уборка квартиры, улица Ленина 15, за тысячу рублей, срочно"</li>
+                    <li style="color: white;"><strong>Форма заполнится автоматически!</strong> Категория: Уборка, Адрес: ул. Ленина 15, Цена: 1000₽, Срочность: Срочно</li>
+                    <li style="color: white;"><strong>Нажмите "Создать задание"</strong> — готово!</li>
+                </ul>
+            </div>
+
+            <p style="font-size: 22px; margin-top: 30px; text-align: center; font-weight: 600;">
+                ⚡ Вместо 5 минут ручного ввода — <span class="highlight">30 секунд голосом!</span>
+            </p>
+        </div>
+
+        <!-- Слайд 9: Для молодежи -->
+        <div class="slide">
+            <div class="slide-number">Слайд 9 / 15</div>
+            <h2>💼 Для молодежи: Легкий заработок</h2>
+            <p style="margin-bottom: 20px;">
+                Зарабатывай <span class="highlight">рядом с домом</span> без поездок через весь город!
+            </p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🏠</span>
+                    <div class="feature-title">Рядом с домом</div>
+                    <div class="feature-desc">5-10 минут пешком</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-title">Быстро</div>
+                    <div class="feature-desc">Нашел задание → позвонил → сделал</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <div class="feature-title">Честная оплата</div>
+                    <div class="feature-desc">500-3000₽ за задание</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎓</span>
+                    <div class="feature-title">Гибкий график</div>
+                    <div class="feature-desc">Работай когда удобно</div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #4CAF50, #2196F3); color: white; padding: 20px; border-radius: 12px; margin-top: 30px; text-align: center;">
+                <h3 style="color: white; margin-bottom: 15px;">💡 Примеры заданий</h3>
+                <p style="font-size: 15px; margin: 8px 0;">🛒 Купить продукты — 300₽ (30 мин)</p>
+                <p style="font-size: 15px; margin: 8px 0;">🧹 Уборка квартиры — 1500₽ (2 часа)</p>
+                <p style="font-size: 15px; margin: 8px 0;">📦 Доставка посылки — 200₽ (15 мин)</p>
+                <p style="font-size: 15px; margin: 8px 0;">🔧 Мелкий ремонт — 2000₽ (1-2 часа)</p>
+            </div>
+        </div>
+
+        <!-- Слайд 10: Геолокация -->
+        <div class="slide">
+            <div class="slide-number">Слайд 10 / 16</div>
+            <h2>📍 Гиперлокальность</h2>
+            <p>Соединяем <span class="highlight">соседей</span>, а не весь город!</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
+                <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 30px; border-radius: 15px; border-left: 5px solid #dc3545;">
+                    <h3 style="color: #721c24; margin-bottom: 20px;">❌ На конкурентах</h3>
+                    <p style="font-size: 18px; color: #721c24;">Заказчик: Северный район</p>
+                    <p style="font-size: 18px; color: #721c24;">Исполнитель: Южный район (30 км)</p>
+                    <ul style="margin-top: 20px; list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; font-size: 18px; color: #721c24;">🚗 Долго едет (1-2 часа)</li>
+                        <li style="padding: 10px 0; font-size: 18px; color: #721c24;">💸 Дорого (транспорт)</li>
+                        <li style="padding: 10px 0; font-size: 18px; color: #721c24;">😰 Незнакомый район</li>
+                    </ul>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); padding: 30px; border-radius: 15px; border-left: 5px solid #28a745;">
+                    <h3 style="color: #155724; margin-bottom: 20px;">✅ Помощь Рядом</h3>
+                    <p style="font-size: 18px; color: #155724;">Заказчик: Северный район</p>
+                    <p style="font-size: 18px; color: #155724;">Исполнитель: Северный район (1 км)</p>
+                    <ul style="margin-top: 20px; list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; font-size: 18px; color: #155724;">⚡ Рядом (5-10 минут)</li>
+                        <li style="padding: 10px 0; font-size: 18px; color: #155724;">💰 Дешево (без транспорта)</li>
+                        <li style="padding: 10px 0; font-size: 18px; color: #155724;">🤝 СОСЕД (безопасно)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p style="font-size: 24px; margin-top: 40px; text-align: center; font-weight: 600;">
+                📍 Кнопка <span class="highlight">"Определить район автоматически"</span> через GPS
+            </p>
+        </div>
+
+        <!-- Слайд 10: Оплата -->
+        <div class="slide">
+            <div class="slide-number">Слайд 10 / 15</div>
+            <h2>💳 Оплата контакта</h2>
+            <p>Простая и безопасная система оплаты:</p>
+            
+            <ul class="step-list">
+                <li><strong>Маскировка телефона:</strong> +7 (902) ***-**-45 — номер скрыт</li>
+                <li><strong>Оплата 50₽ через СБП:</strong> QR-код для оплаты</li>
+                <li><strong>Разблокировка номера:</strong> после оплаты видите полный номер</li>
+                <li><strong>Кнопка "📞 Позвонить":</strong> звоните напрямую, без чатов</li>
+            </ul>
+
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 40px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                <h3 style="color: white; margin-bottom: 20px;">💰 Стоимость</h3>
+                <div style="font-size: 64px; font-weight: 700; margin: 20px 0;">50₽</div>
+                <p style="font-size: 20px; opacity: 0.9;">В 2-3 раза дешевле конкурентов (80-150₽)</p>
+            </div>
+        </div>
+
+        <!-- Слайд 11: Отзывы -->
+        <div class="slide">
+            <div class="slide-number">Слайд 11 / 16</div>
+            <h2>⭐ Отзывы и рейтинги</h2>
+            <p>Система доверия между пользователями:</p>
+            
+            <ul class="step-list">
+                <li><strong>Оценка 1-5 звезд:</strong> интерактивный выбор звезд</li>
+                <li><strong>Комментарий:</strong> подробный отзыв о работе</li>
+                <li><strong>Автоматический пересчет:</strong> средний рейтинг обновляется</li>
+                <li><strong>Статистика:</strong> разбивка по количеству звезд</li>
+            </ul>
+
+            <div style="background: linear-gradient(135deg, #ffeaa7, #fdcb6e); padding: 40px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                <div style="font-size: 72px; margin-bottom: 20px;">⭐⭐⭐⭐⭐</div>
+                <p style="font-size: 28px; font-weight: 600; color: #2d3436;">Средний рейтинг: 4.8 / 5.0</p>
+                <p style="font-size: 20px; color: #636e72; margin-top: 15px;">На основе 247 отзывов</p>
+            </div>
+        </div>
+
+        <!-- Слайд 12: Модерация -->
+        <div class="slide">
+            <div class="slide-number">Слайд 12 / 16</div>
+            <h2>🛡️ Безопасность и модерация</h2>
+            <p>Защита от мошенников и спамеров:</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🚫</span>
+                    <div class="feature-title">Лимит заданий</div>
+                    <div class="feature-desc">Максимум 5 активных заданий на пользователя</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⏱️</span>
+                    <div class="feature-title">Антиспам</div>
+                    <div class="feature-desc">Запрет дубликатов в течение 1 часа</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📢</span>
+                    <div class="feature-title">Система жалоб</div>
+                    <div class="feature-desc">Жалобы на задания и пользователей</div>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔒</span>
+                    <div class="feature-title">Автоблокировка</div>
+                    <div class="feature-desc">После 3+ жалоб пользователь блокируется</div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #ff7979, #e55039); color: white; padding: 30px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                <h3 style="color: white; margin-bottom: 15px;">⚠️ Важно</h3>
+                <p style="font-size: 20px;">Мы следим за безопасностью сервиса и быстро реагируем на жалобы</p>
+            </div>
+        </div>
+
+        <!-- Слайд 13: Сравнение с конкурентами -->
+        <div class="slide">
+            <div class="slide-number">Слайд 13 / 16</div>
+            <h2>🏆 Сравнение с конкурентами</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Параметр</th>
+                        <th>Помощь Рядом</th>
+                        <th>Профи.ру / Юду</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Простота для пожилых</strong></td>
+                        <td class="winner">⭐⭐⭐⭐⭐</td>
+                        <td>⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Голосовой ввод</strong></td>
+                        <td class="winner">✅ Есть</td>
+                        <td>❌ Нет</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Локальность (1-3 км)</strong></td>
+                        <td class="winner">✅ Соседи</td>
+                        <td>❌ Весь город</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Стоимость контакта</strong></td>
+                        <td class="winner">50₽</td>
+                        <td>80-150₽</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Скорость регистрации</strong></td>
+                        <td class="winner">1 минута</td>
+                        <td>5-10 минут</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Чаты</strong></td>
+                        <td class="winner">❌ Прямые звонки</td>
+                        <td>✅ Обязательно</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="font-size: 24px; margin-top: 40px; text-align: center; font-weight: 600;">
+                🎯 "Помощь Рядом" — это <span class="highlight">НЕ конкурент</span>, это <span class="highlight">НОВАЯ НИША</span>
+            </p>
+        </div>
+
+        <!-- Слайд 14: Рынок -->
+        <div class="slide">
+            <div class="slide-number">Слайд 14 / 16</div>
+            <h2>📈 Размер рынка</h2>
+            <p style="font-size: 24px; margin-bottom: 40px;">
+                Огромный потенциал <span class="highlight">неохваченной аудитории</span>
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">30+</span>
+                    <span class="stat-label">млн пожилых<br>(60+ лет)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">1.25</span>
+                    <span class="stat-label">млн пользуются<br>P2P (4%)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">28.75</span>
+                    <span class="stat-label">млн НЕ пользуются<br>(96%)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">150</span>
+                    <span class="stat-label">млн ₽/год при 1%<br>захвата рынка</span>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #00b894, #00cec9); color: white; padding: 40px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                <h3 style="color: white; font-size: 32px; margin-bottom: 20px;">💡 Почему они не пользуются?</h3>
+                <p style="font-size: 28px; font-weight: 600;">СЛИШКОМ СЛОЖНО!</p>
+                <p style="font-size: 20px; margin-top: 15px; opacity: 0.9;">И это наша возможность</p>
+            </div>
+        </div>
+
+        <!-- Слайд 15: Заключение -->
+        <div class="slide">
+            <div class="slide-number">Слайд 16 / 16</div>
+            <h2 style="text-align: center;">🎯 Итоги</h2>
+            
+            <div class="pros-cons">
+                <div class="pros">
+                    <h3>✅ Уникальные преимущества</h3>
+                    <ul>
+                        <li>Голосовой ввод</li>
+                        <li>Простота для пожилых</li>
+                        <li>Гиперлокальность (1-3 км)</li>
+                        <li>Дешевле в 2-3 раза</li>
+                        <li>Без чатов (прямые звонки)</li>
+                        <li>Быстрая регистрация (1 мин)</li>
+                    </ul>
+                </div>
+                
+                <div class="cons">
+                    <h3>⚠️ Что нужно добавить</h3>
+                    <ul>
+                        <li>Мобильное приложение</li>
+                        <li>Верификация пользователей</li>
+                        <li>Расширение на другие города</li>
+                        <li>AI голосовой ассистент</li>
+                        <li>Интеграция с Госуслугами</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px;">
+                <h2 style="font-size: 42px; margin-bottom: 30px;">🚀 Проект готов к запуску!</h2>
+                <a href="http://127.0.0.1:5000" class="cta-button" target="_blank">
+                    Попробовать демо →
+                </a>
+                <p style="font-size: 20px; margin-top: 30px; color: #666;">
+                    Все 8 этапов разработки завершены ✅<br>
+                    Протестировано и задокументировано ✅
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" onclick="scrollToTop()">↑ Наверх</button>
+        <button class="nav-button" onclick="scrollToBottom()">↓ Вниз</button>
+    </div>
+
+    <script>
+        // Прогресс-бар
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Навигация
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Плавное появление слайдов при скролле
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.slide').forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Анимация чисел при скролле
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value + (element.textContent.includes('+') ? '+' : '');
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.animated) {
+                    const number = entry.target;
+                    const value = parseFloat(number.textContent);
+                    number.dataset.animated = 'true';
+                    animateValue(number, 0, value, 2000);
+                }
+            });
+        });
+
+        document.querySelectorAll('.stat-number').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+
+        console.log('🎉 Презентация "Помощь Рядом" загружена успешно!');
+        console.log('📊 Всего слайдов: 15');
+        console.log('🚀 Прокрутите вниз для просмотра');
+    </script>
+</body>
+</html>

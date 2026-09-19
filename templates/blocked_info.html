@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Аккаунт заблокирован - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .blocked-container {
+        max-width: 600px;
+        margin: var(--spacing-xl) auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+        text-align: center;
+    }
+    
+    .blocked-card {
+        background-color: var(--bg);
+        border: 2px solid var(--danger-red);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-xl);
+        box-shadow: 0 8px 24px rgba(244, 67, 54, 0.2);
+    }
+    
+    .blocked-icon {
+        font-size: 80px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .blocked-title {
+        color: var(--danger-red);
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .blocked-message {
+        color: var(--text);
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .blocked-reason {
+        background-color: rgba(244, 67, 54, 0.1);
+        border-left: 4px solid var(--danger-red);
+        padding: var(--spacing-md);
+        border-radius: 6px;
+        margin-bottom: var(--spacing-lg);
+        text-align: left;
+    }
+    
+    .blocked-reason-title {
+        font-weight: 600;
+        color: var(--danger-red);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .blocked-reason-text {
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .blocked-date {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .support-info {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .support-title {
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .support-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="blocked-container">
+    <div class="blocked-card">
+        <div class="blocked-icon">🚫</div>
+        <h1 class="blocked-title">Аккаунт заблокирован</h1>
+        
+        <p class="blocked-message">
+            Ваш аккаунт был заблокирован из-за нарушения правил сервиса.
+        </p>
+        
+        {% if current_user.blocked_reason %}
+            <div class="blocked-reason">
+                <div class="blocked-reason-title">Причина блокировки:</div>
+                <div class="blocked-reason-text">{{ current_user.blocked_reason }}</div>
+            </div>
+        {% endif %}
+        
+        {% if current_user.blocked_at %}
+            <div class="blocked-date">
+                Дата блокировки: {{ current_user.blocked_at.strftime('%d.%m.%Y %H:%M') }}
+            </div>
+        {% endif %}
+        
+        <div class="support-info">
+            <div class="support-title">📧 Служба поддержки</div>
+            <div class="support-text">
+                Если вы считаете, что блокировка была ошибочной, 
+                свяжитесь со службой поддержки: support@pomosh-ryadom.ru
+            </div>
+        </div>
+        
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width: 100%;">
+            Выйти из аккаунта
+        </a>
+    </div>
+</div>
+{% endblock %}

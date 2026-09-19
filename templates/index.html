@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Помощь Рядом{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Помощь рядом с вашим домом</h1>
+        <p class="hero-subtitle">
+            Найдите надежного исполнителя в вашем районе или предложите свои услуги. 
+            Без сложных чатов — просто позвоните и договоритесь!
+        </p>
+        
+        <div class="hero-buttons">
+            {% if current_user.is_authenticated and current_user.role in ['customer', 'both'] %}
+                <a href="{{ url_for('tasks.create_task') }}" class="btn btn-primary btn-large">
+                    <span>🙋</span>
+                    <span>Мне нужна помощь</span>
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-large">
+                    <span>🙋</span>
+                    <span>Мне нужна помощь</span>
+                </a>
+            {% endif %}
+            
+            <a href="{{ url_for('tasks.tasks_list') }}" class="btn btn-secondary btn-large">
+                <span>💼</span>
+                <span>Я хочу заработать</span>
+            </a>
+        </div>
+        
+        <div class="hero-features">
+            <p>
+                📍 Работаем только с вашим районом<br>
+                📞 Прямая связь без посредников<br>
+                ⚡ Быстрый отклик на срочные заказы<br>
+                💰 Оплата 50₽ за контакт исполнителя
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

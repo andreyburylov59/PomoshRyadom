@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата доступа к контакту - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pay-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .pay-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .pay-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--border);
+    }
+    
+    .pay-title {
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .pay-amount {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin: var(--spacing-md) 0;
+    }
+    
+    .pay-description {
+        color: var(--text-secondary);
+        font-size: 16px;
+    }
+    
+    .task-info {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .task-info-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .task-info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--spacing-xs) 0;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .task-info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .task-info-label {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+    
+    .task-info-value {
+        color: var(--text);
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .qr-section {
+        text-align: center;
+        padding: var(--spacing-lg);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: var(--button-radius);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .qr-section-title {
+        color: var(--bg);
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .qr-code-wrapper {
+        background-color: var(--bg);
+        padding: var(--spacing-md);
+        border-radius: 12px;
+        display: inline-block;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    
+    .qr-code-image {
+        max-width: 300px;
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .qr-instructions {
+        color: var(--bg);
+        margin-top: var(--spacing-md);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .payment-steps {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .payment-steps-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-md);
+        color: var(--text);
+    }
+    
+    .payment-step {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+    
+    .payment-step:last-child {
+        margin-bottom: 0;
+    }
+    
+    .step-number {
+        background-color: var(--primary-blue);
+        color: var(--bg);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: var(--spacing-sm);
+        flex-shrink: 0;
+    }
+    
+    .step-text {
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    .simulate-section {
+        background-color: #FFF3E0;
+        border: 2px dashed var(--warning-yellow);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .simulate-title {
+        color: #E65100;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .simulate-description {
+        color: #E65100;
+        font-size: 14px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .btn-simulate {
+        background-color: var(--warning-yellow);
+        color: var(--text);
+    }
+    
+    .btn-simulate:hover {
+        background-color: #FFA000;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: var(--spacing-sm);
+        justify-content: center;
+    }
+    
+    @media (max-width: 768px) {
+        .pay-amount {
+            font-size: 36px;
+        }
+        
+        .qr-code-image {
+            max-width: 250px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pay-container">
+    <div class="pay-card">
+        <div class="pay-header">
+            <h1 class="pay-title">💳 Оплата доступа к контакту</h1>
+            <div class="pay-amount">{{ payment.amount }} ₽</div>
+            <p class="pay-description">
+                Оплатите, чтобы получить номер телефона заказчика и позвонить ему напрямую
+            </p>
+        </div>
+        
+        <div class="task-info">
+            <h2 class="task-info-title">📋 Информация о задании</h2>
+            <div class="task-info-item">
+                <span class="task-info-label">Задание:</span>
+                <span class="task-info-value">{{ task.title }}</span>
+            </div>
+            <div class="task-info-item">
+                <span class="task-info-label">Цена задания:</span>
+                <span class="task-info-value">{{ task.price }} ₽</span>
+            </div>
+            <div class="task-info-item">
+                <span class="task-info-label">Заказчик:</span>
+                <span class="task-info-value">{{ creator.name }}</span>
+            </div>
+            <div class="task-info-item">
+                <span class="task-info-label">Район:</span>
+                <span class="task-info-value">{{ task.district }}</span>
+            </div>
+            <div class="task-info-item">
+                <span class="task-info-label">Категория:</span>
+                <span class="task-info-value">{{ task.category }}</span>
+            </div>
+        </div>
+        
+        <div class="qr-section">
+            <h2 class="qr-section-title">📱 Отсканируйте QR-код</h2>
+            <div class="qr-code-wrapper">
+                <img 
+                    src="{{ url_for('static', filename='uploads/' + payment.qr_code_path) }}" 
+                    alt="QR-код для оплаты"
+                    class="qr-code-image"
+                >
+            </div>
+            <div class="qr-instructions">
+                ✓ Откройте приложение вашего банка<br>
+                ✓ Выберите "Оплата по QR-коду"<br>
+                ✓ Отсканируйте код и подтвердите платеж
+            </div>
+        </div>
+        
+        <div class="payment-steps">
+            <h3 class="payment-steps-title">Как это работает:</h3>
+            <div class="payment-step">
+                <div class="step-number">1</div>
+                <div class="step-text">
+                    Отсканируйте QR-код с помощью приложения вашего банка
+                </div>
+            </div>
+            <div class="payment-step">
+                <div class="step-number">2</div>
+                <div class="step-text">
+                    Подтвердите оплату {{ payment.amount }} ₽ в приложении банка
+                </div>
+            </div>
+            <div class="payment-step">
+                <div class="step-number">3</div>
+                <div class="step-text">
+                    После оплаты вы автоматически увидите полный номер телефона заказчика
+                </div>
+            </div>
+            <div class="payment-step">
+                <div class="step-number">4</div>
+                <div class="step-text">
+                    Позвоните заказчику напрямую и договоритесь о выполнении задания
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция симуляции оплаты (только для разработки) -->
+        <div class="simulate-section">
+            <div class="simulate-title">⚠️ Режим разработки</div>
+            <p class="simulate-description">
+                Для тестирования вы можете симулировать успешную оплату без реального платежа.
+                В продакшене эта кнопка будет удалена.
+            </p>
+            <form method="POST" action="{{ url_for('payment.simulate_payment', payment_id=payment.id) }}">
+                <button type="submit" class="btn btn-simulate">
+                    🧪 Симулировать оплату (только для теста)
+                </button>
+            </form>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('tasks.task_detail', task_id=task.id) }}" class="btn btn-secondary">
+                ← Вернуться к заданию
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

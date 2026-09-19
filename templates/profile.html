@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль - {{ user.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .profile-header {
+        text-align: center;
+        padding: var(--spacing-lg);
+        background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+        color: var(--bg);
+        border-radius: var(--button-radius);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        margin: 0 auto var(--spacing-md);
+    }
+    
+    .profile-name {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .profile-role {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+    
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .stat-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-md);
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .stat-label {
+        font-size: 16px;
+        color: var(--text-secondary);
+    }
+    
+    .profile-info {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--spacing-sm) 0;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .info-value {
+        color: var(--text-secondary);
+    }
+    
+    .verified-badge {
+        display: inline-block;
+        background-color: var(--primary-green);
+        color: var(--bg);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    
+    .unverified-badge {
+        display: inline-block;
+        background-color: var(--warning-yellow);
+        color: var(--text);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if user.role == 'customer' %}
+                🙋
+            {% elif user.role == 'executor' %}
+                💼
+            {% else %}
+                🤝
+            {% endif %}
+        </div>
+        <h1 class="profile-name">{{ user.name }}</h1>
+        <p class="profile-role">
+            {% if user.role == 'customer' %}
+                Заказчик услуг
+            {% elif user.role == 'executor' %}
+                Исполнитель услуг
+            {% else %}
+                Заказчик и Исполнитель
+            {% endif %}
+        </p>
+    </div>
+    
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-value" style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="color: #FFD700;">
+                    {% for i in range(5) %}
+                        {% if i < user.rating|int %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                <span>{{ user.get_average_rating() }}</span>
+            </div>
+            <div class="stat-label">⭐ Рейтинг</div>
+            <a href="{{ url_for('reviews.user_reviews', user_id=user.id) }}" style="color: var(--primary-blue); font-size: 14px; text-decoration: none; margin-top: 4px; display: inline-block;">
+                Все отзывы →
+            </a>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ user.completed_tasks }}</div>
+            <div class="stat-label">✅ Выполнено заданий</div>
+        </div>
+    </div>
+    
+    <div class="profile-info">
+        <h2 style="margin-bottom: var(--spacing-md);">Информация о профиле</h2>
+        
+        <div class="info-row">
+            <span class="info-label">Телефон:</span>
+            <span class="info-value">{{ user.phone }}</span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Район:</span>
+            <span class="info-value">{{ user.district if user.district else 'Не указан' }}</span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Статус:</span>
+            <span class="info-value">
+                {% if user.is_verified %}
+                    <span class="verified-badge">✓ Верифицирован</span>
+                {% else %}
+                    <span class="unverified-badge">⏳ Не верифицирован</span>
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Дата регистрации:</span>
+            <span class="info-value">{{ user.created_at.strftime('%d.%m.%Y') if user.created_at else 'Неизвестно' }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

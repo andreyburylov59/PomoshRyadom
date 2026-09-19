@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Помощь Рядом - гиперлокальный маркетплейс бытовых услуг для вашего района">
+    <meta name="keywords" content="услуги, помощь, район, заказать, исполнитель, мастер, уборка, доставка">
+    <meta name="theme-color" content="#4CAF50">
+    <title>{% block title %}Помощь Рядом{% endblock %}</title>
+    
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="navbar-brand">
+                <span>🤝</span>
+                <span>Помощь Рядом</span>
+            </a>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('index') }}">Главная</a></li>
+                    <li><a href="{{ url_for('tasks.tasks_list') }}">Задания</a></li>
+                    <li><a href="{{ url_for('tasks.my_tasks') }}">Мои заказы</a></li>
+                    <li><a href="{{ url_for('payment.my_payments') }}">Мои платежи</a></li>
+                    <li><a href="{{ url_for('reviews.my_reviews') }}">Мои отзывы</a></li>
+                    <li><a href="{{ url_for('moderation.my_reports') }}">Мои жалобы</a></li>
+                    <li><a href="{{ url_for('auth.profile') }}">Профиль</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Выход</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('index') }}">Главная</a></li>
+                    <li><a href="{{ url_for('tasks.tasks_list') }}">Задания</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Войти</a></li>
+                    <li><a href="{{ url_for('auth.register') }}">Регистрация</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash-сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Основной контент -->
+    <div class="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Помощь Рядом. Все права защищены. | Сделано с ❤️ для вашего района</p>
+        </div>
+    </footer>
+
+    <!-- Подключение JavaScript -->
+    <script>
+        // Автоматическое скрытие flash-сообщений через 5 секунд
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+        
+        // Анимация скрытия
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

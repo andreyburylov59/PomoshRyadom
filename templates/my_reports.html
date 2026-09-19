@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Мои жалобы - Помощь Рядом{% endblock %}
+
+{% block content %}
+<style>
+    .reports-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .reports-section {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .reports-section h2 {
+        font-size: 24px;
+        color: var(--text);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .report-item {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        border-left: 4px solid var(--primary-blue);
+    }
+    
+    .report-item.received {
+        border-left-color: var(--danger-red);
+    }
+    
+    .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    .report-reason {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .report-status {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .status-pending {
+        background: var(--warning-yellow);
+        color: #856404;
+    }
+    
+    .status-reviewed {
+        background: var(--primary-blue);
+        color: white;
+    }
+    
+    .status-resolved {
+        background: var(--primary-green);
+        color: white;
+    }
+    
+    .report-target {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .report-description {
+        color: var(--text);
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+    
+    .report-date {
+        color: #6c757d;
+        font-size: 13px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+    
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+    
+    @media (max-width: 768px) {
+        .reports-container {
+            padding: 16px;
+        }
+        
+        .reports-section {
+            padding: 16px;
+        }
+        
+        .report-header {
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+</style>
+
+<div class="reports-container">
+    <!-- Жалобы, которые я подал -->
+    <div class="reports-section">
+        <h2>📤 Мои жалобы</h2>
+        
+        {% if reports_made %}
+            {% for report in reports_made %}
+            <div class="report-item">
+                <div class="report-header">
+                    <div>
+                        <div class="report-reason">
+                            {% if report.reason == 'spam' %}🚫 Спам
+                            {% elif report.reason == 'fraud' %}⚠️ Мошенничество
+                            {% elif report.reason == 'inappropriate' %}❌ Неприемлемый контент
+                            {% else %}📝 Другое
+                            {% endif %}
+                        </div>
+                        <div class="report-target">
+                            {% if report.reported_task %}
+                                Задание: <a href="{{ url_for('tasks.task_detail', task_id=report.reported_task.id) }}">{{ report.reported_task.title }}</a>
+                            {% elif report.reported_user %}
+                                Пользователь: <a href="{{ url_for('reviews.user_reviews', user_id=report.reported_user.id) }}">{{ report.reported_user.name }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="report-status status-{{ report.status }}">
+                        {% if report.status == 'pending' %}Ожидает рассмотрения
+                        {% elif report.status == 'reviewed' %}Рассмотрена
+                        {% elif report.status == 'resolved' %}Решена
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if report.description %}
+                <div class="report-description">{{ report.description }}</div>
+                {% endif %}
+                
+                <div class="report-date">
+                    Подана: {{ report.created_at.strftime('%d.%m.%Y в %H:%M') }}
+                    {% if report.reviewed_at %}
+                    | Рассмотрена: {{ report.reviewed_at.strftime('%d.%m.%Y в %H:%M') }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>Вы еще не подавали жалоб</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Жалобы на меня -->
+    <div class="reports-section">
+        <h2>📥 Жалобы на меня</h2>
+        
+        {% if reports_received %}
+            {% for report in reports_received %}
+            <div class="report-item received">
+                <div class="report-header">
+                    <div>
+                        <div class="report-reason">
+                            {% if report.reason == 'spam' %}🚫 Спам
+                            {% elif report.reason == 'fraud' %}⚠️ Мошенничество
+                            {% elif report.reason == 'inappropriate' %}❌ Неприемлемый контент
+                            {% else %}📝 Другое
+                            {% endif %}
+                        </div>
+                        <div class="report-target">
+                            От пользователя: {{ report.reporter.name }}
+                            {% if report.reported_task %}
+                            | По заданию: <a href="{{ url_for('tasks.task_detail', task_id=report.reported_task.id) }}">{{ report.reported_task.title }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="report-status status-{{ report.status }}">
+                        {% if report.status == 'pending' %}Ожидает рассмотрения
+                        {% elif report.status == 'reviewed' %}Рассмотрена
+                        {% elif report.status == 'resolved' %}Решена
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if report.description %}
+                <div class="report-description">{{ report.description }}</div>
+                {% endif %}
+                
+                <div class="report-date">
+                    Подана: {{ report.created_at.strftime('%d.%m.%Y в %H:%M') }}
+                    {% if report.reviewed_at %}
+                    | Рассмотрена: {{ report.reviewed_at.strftime('%d.%m.%Y в %H:%M') }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">✅</div>
+                <p>На вас нет жалоб</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

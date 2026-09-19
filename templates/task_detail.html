@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block title %}{{ task.title }} - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .task-detail-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-bottom: var(--spacing-md);
+        color: var(--primary-blue);
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    
+    .task-detail-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .task-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .task-title-section h1 {
+        color: var(--text);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .task-price-section {
+        text-align: right;
+    }
+    
+    .task-price-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .task-price {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--primary-green);
+    }
+    
+    .task-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    
+    .badge-urgent {
+        background-color: var(--danger-red);
+        color: var(--bg);
+    }
+    
+    .badge-planned {
+        background-color: var(--primary-green);
+        color: var(--bg);
+    }
+    
+    .badge-skills {
+        background-color: var(--warning-yellow);
+        color: var(--text);
+    }
+    
+    .badge-category {
+        background-color: var(--primary-blue);
+        color: var(--bg);
+    }
+    
+    .badge-cancelled {
+        background-color: #9E9E9E;
+        color: var(--bg);
+    }
+    
+    .task-description {
+        font-size: 18px;
+        line-height: 1.8;
+        color: var(--text);
+        margin-bottom: var(--spacing-lg);
+        white-space: pre-wrap;
+    }
+    
+    .task-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .info-item {
+        padding: var(--spacing-sm);
+        background-color: var(--bg-secondary);
+        border-radius: 8px;
+    }
+    
+    .info-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .info-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .contact-section {
+        padding: var(--spacing-md);
+        background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+        border-radius: var(--button-radius);
+        color: var(--bg);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .contact-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .phone-display {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .phone-hidden {
+        opacity: 0.7;
+    }
+    
+    .phone-unlock-info {
+        font-size: 14px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .btn-call {
+        background-color: var(--bg);
+        color: var(--primary-green);
+        width: 100%;
+    }
+    
+    .btn-call:hover {
+        background-color: var(--bg-secondary);
+        color: var(--primary-green);
+    }
+    
+    .actions-section {
+        display: flex;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    @media (max-width: 768px) {
+        .task-header {
+            flex-direction: column;
+        }
+        
+        .task-price-section {
+            text-align: left;
+        }
+        
+        .actions-section {
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="task-detail-container">
+    <a href="{{ url_for('tasks.tasks_list') }}" class="back-link">← Назад к заданиям</a>
+    
+    <div class="task-detail-card">
+        <div class="task-header">
+            <div class="task-title-section">
+                <h1>{{ task.title }}</h1>
+                <div class="task-badges">
+                    {% if task.status == 'cancelled' %}
+                        <span class="badge badge-cancelled">❌ Отменено</span>
+                    {% endif %}
+                    
+                    {% if task.urgency == 'срочно' %}
+                        <span class="badge badge-urgent">⚡ Срочно</span>
+                    {% elif task.urgency == 'планово' %}
+                        <span class="badge badge-planned">📅 Планово</span>
+                    {% else %}
+                        <span class="badge badge-skills">🎯 Навыки</span>
+                    {% endif %}
+                    
+                    <span class="badge badge-category">{{ task.category }}</span>
+                </div>
+            </div>
+            
+            <div class="task-price-section">
+                <div class="task-price-label">Цена</div>
+                <div class="task-price">{{ task.price }} ₽</div>
+            </div>
+        </div>
+        
+        <div class="task-description">{{ task.description }}</div>
+        
+        <div class="task-info-grid">
+            <div class="info-item">
+                <div class="info-label">📍 Район</div>
+                <div class="info-value">{{ task.district }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">📮 Адрес</div>
+                <div class="info-value">{{ task.address }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">👤 Заказчик</div>
+                <div class="info-value">{{ task.creator.name }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">📅 Создано</div>
+                <div class="info-value">{{ task.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            </div>
+        </div>
+    </div>
+    
+    {% if current_user.is_authenticated and task.user_id != current_user.id and task.status == 'active' %}
+        <div style="text-align: center; margin-top: var(--spacing-md);">
+            <a href="{{ url_for('moderation.report_task', task_id=task.id) }}" style="color: var(--danger-red); text-decoration: none; font-size: 14px;">
+                🚨 Пожаловаться на задание
+            </a>
+        </div>
+    {% endif %}
+    
+    {% if current_user.is_authenticated and current_user.role in ['executor', 'both'] and task.status == 'active' and task.user_id != current_user.id %}
+        <div class="contact-section">
+            <h2 class="contact-title">📞 Контакты заказчика</h2>
+            
+            {% if can_see_phone %}
+                <div class="phone-display">{{ display_phone }}</div>
+                <a href="tel:{{ display_phone }}" class="btn btn-call">
+                    📞 Позвонить заказчику
+                </a>
+                <p class="phone-unlock-info" style="color: var(--primary-green); margin-top: var(--spacing-sm);">
+                    ✓ Контакт разблокирован
+                </p>
+            {% else %}
+                <div class="phone-display phone-hidden">{{ display_phone }}</div>
+                <p class="phone-unlock-info">
+                    Для получения полного номера телефона оплатите 50₽ через СБП.
+                    После оплаты вы сможете позвонить заказчику.
+                </p>
+                <a href="{{ url_for('payment.pay_for_contact', task_id=task.id) }}" class="btn btn-primary" style="width: 100%;">
+                    💰 Оплатить 50₽ и получить контакт
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    {% if current_user.is_authenticated and task.user_id == current_user.id %}
+        <div class="actions-section">
+            {% if task.status == 'active' %}
+                <a href="{{ url_for('tasks.edit_task', task_id=task.id) }}" class="btn btn-primary btn-action">
+                    ✏️ Редактировать
+                </a>
+                
+                <button type="button" class="btn btn-primary btn-action" onclick="showCompleteModal()">
+                    ✓ Завершить задание
+                </button>
+                
+                <form method="POST" action="{{ url_for('tasks.cancel_task', task_id=task.id) }}" style="flex: 1; min-width: 150px;">
+                    <button type="submit" class="btn btn-warning btn-action" onclick="return confirm('Отменить задание?')">
+                        ⏸️ Отменить
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('tasks.delete_task', task_id=task.id) }}" style="flex: 1; min-width: 150px;">
+                    <button type="submit" class="btn btn-danger btn-action" onclick="return confirm('Удалить задание? Это действие необратимо!')">
+                        🗑️ Удалить
+                    </button>
+                </form>
+            {% else %}
+                <form method="POST" action="{{ url_for('tasks.delete_task', task_id=task.id) }}" style="width: 100%;">
+                    <button type="submit" class="btn btn-danger btn-action" onclick="return confirm('Удалить задание? Это действие необратимо!')">
+                        🗑️ Удалить
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    {% if task.status == 'completed' and current_user.is_authenticated %}
+        {% if task.can_review(current_user.id) %}
+            <div class="contact-section">
+                <h2 class="contact-title">⭐ Оставить отзыв</h2>
+                <p style="margin-bottom: var(--spacing-md);">
+                    Задание выполнено! Оцените работу 
+                    {% if current_user.id == task.user_id %}исполнителя{% else %}заказчика{% endif %}.
+                </p>
+                <a href="{{ url_for('reviews.leave_review', task_id=task.id) }}" class="btn btn-primary" style="width: 100%;">
+                    ⭐ Оставить отзыв
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+    
+    <!-- Модальное окно завершения задания -->
+    <div id="completeModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background-color: var(--bg); border-radius: var(--button-radius); padding: var(--spacing-lg); max-width: 500px; margin: var(--spacing-md);">
+            <h2 style="margin-bottom: var(--spacing-md);">Завершить задание</h2>
+            <p style="margin-bottom: var(--spacing-md);">Укажите ID исполнителя, который выполнил задание:</p>
+            <form method="POST" action="{{ url_for('reviews.complete_task', task_id=task.id) }}">
+                <input type="number" name="executor_id" placeholder="ID исполнителя" required style="width: 100%; padding: var(--spacing-sm); margin-bottom: var(--spacing-md); border: 2px solid var(--border); border-radius: 8px; font-size: 16px;">
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <button type="button" onclick="hideCompleteModal()" class="btn btn-secondary" style="flex: 1;">Отмена</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">✓ Завершить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function showCompleteModal() {
+            document.getElementById('completeModal').style.display = 'flex';
+        }
+        
+        function hideCompleteModal() {
+            document.getElementById('completeModal').style.display = 'none';
+        }
+        
+        // Закрытие модального окна при клике вне его
+        document.getElementById('completeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideCompleteModal();
+            }
+        });
+    </script>
+</div>
+{% endblock %}

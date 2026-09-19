@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Мои платежи - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payments-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .payments-title {
+        color: var(--primary-green);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .payments-section {
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: var(--spacing-md);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .payments-table {
+        width: 100%;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .payments-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .payments-table th {
+        background-color: var(--bg-secondary);
+        padding: var(--spacing-sm);
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text);
+        border-bottom: 2px solid var(--border);
+    }
+    
+    .payments-table td {
+        padding: var(--spacing-sm);
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+    }
+    
+    .payments-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .payments-table tr:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    .payment-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .status-paid {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--primary-green);
+    }
+    
+    .status-pending {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: var(--warning-yellow);
+    }
+    
+    .payment-amount {
+        font-weight: 700;
+        color: var(--primary-blue);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+    }
+    
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .btn-view {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    @media (max-width: 768px) {
+        .payments-table {
+            overflow-x: auto;
+        }
+        
+        .payments-table th,
+        .payments-table td {
+            padding: var(--spacing-xs);
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payments-container">
+    <h1 class="payments-title">💳 Мои платежи</h1>
+    
+    <!-- Совершенные платежи (как исполнитель) -->
+    <div class="payments-section">
+        <h2 class="section-title">
+            <span>💰</span>
+            <span>Оплаченные контакты (я исполнитель)</span>
+        </h2>
+        
+        {% if my_payments %}
+            <div class="payments-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Задание</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Дата создания</th>
+                            <th>Дата оплаты</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in my_payments %}
+                        <tr>
+                            <td>#{{ payment.id }}</td>
+                            <td>
+                                <a href="{{ url_for('tasks.task_detail', task_id=payment.task_id) }}">
+                                    {{ payment.task.title[:30] }}{% if payment.task.title|length > 30 %}...{% endif %}
+                                </a>
+                            </td>
+                            <td class="payment-amount">{{ payment.amount }} ₽</td>
+                            <td>
+                                {% if payment.status == 'paid' %}
+                                    <span class="payment-status status-paid">✓ Оплачено</span>
+                                {% else %}
+                                    <span class="payment-status status-pending">⏳ Ожидает</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ payment.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                            <td>
+                                {% if payment.paid_at %}
+                                    {{ payment.paid_at.strftime('%d.%m.%Y %H:%M') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if payment.status == 'pending' %}
+                                    <a href="{{ url_for('payment.pay_for_contact', task_id=payment.task_id) }}" class="btn btn-primary btn-view">
+                                        Оплатить
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('tasks.task_detail', task_id=payment.task_id) }}" class="btn btn-secondary btn-view">
+                                        Открыть
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">💸</div>
+                <h3>Платежей пока нет</h3>
+                <p>Вы еще не оплачивали доступ к контактам</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Полученные платежи (как заказчик) -->
+    <div class="payments-section">
+        <h2 class="section-title">
+            <span>📥</span>
+            <span>Полученные платежи (я заказчик)</span>
+        </h2>
+        
+        {% if received_payments %}
+            <div class="payments-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Задание</th>
+                            <th>Исполнитель</th>
+                            <th>Сумма</th>
+                            <th>Дата оплаты</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in received_payments %}
+                        <tr>
+                            <td>#{{ payment.id }}</td>
+                            <td>
+                                <a href="{{ url_for('tasks.task_detail', task_id=payment.task_id) }}">
+                                    {{ payment.task.title[:30] }}{% if payment.task.title|length > 30 %}...{% endif %}
+                                </a>
+                            </td>
+                            <td>{{ payment.executor.name }}</td>
+                            <td class="payment-amount">{{ payment.amount }} ₽</td>
+                            <td>{{ payment.paid_at.strftime('%d.%m.%Y %H:%M') if payment.paid_at else '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: var(--spacing-md); text-align: center; color: var(--text-secondary); font-size: 14px;">
+                ℹ️ Эти платежи были совершены исполнителями за доступ к вашим контактам
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>Платежей пока нет</h3>
+                <p>Никто еще не оплачивал доступ к вашим контактам</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

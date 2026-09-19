@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Пожаловаться на пользователя - Помощь Рядом{% endblock %}
+
+{% block extra_css %}
+<style>
+    .report-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-sm);
+    }
+    
+    .report-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--button-radius);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .report-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+        border-bottom: 2px solid var(--border);
+    }
+    
+    .report-title {
+        color: var(--danger-red);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .task-info {
+        background-color: var(--bg-secondary);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .task-info-title {
+        font-weight: 600;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .form-group {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--text);
+        font-size: 16px;
+    }
+    
+    .reason-options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .reason-option {
+        position: relative;
+    }
+    
+    .reason-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .reason-label {
+        display: block;
+        padding: var(--spacing-sm);
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .reason-option input[type="radio"]:checked + .reason-label {
+        border-color: var(--danger-red);
+        background-color: rgba(244, 67, 54, 0.1);
+        font-weight: 600;
+    }
+    
+    .reason-label:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    .form-textarea {
+        width: 100%;
+        padding: var(--spacing-sm);
+        font-size: 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+        font-family: inherit;
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--danger-red);
+    }
+    
+    .form-hint {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: var(--spacing-xs);
+    }
+    
+    .warning-box {
+        background-color: #FFF3E0;
+        border-left: 4px solid var(--warning-yellow);
+        padding: var(--spacing-md);
+        border-radius: 6px;
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .warning-title {
+        font-weight: 600;
+        color: #E65100;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .warning-text {
+        color: #E65100;
+        font-size: 14px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+    <div class="report-card">
+        <div class="report-header">
+            <h1 class="report-title">🚨 Пожаловаться на пользователя</h1>
+            <p style="color: var(--text-secondary);">
+                Помогите нам сделать сервис безопаснее
+            </p>
+        </div>
+        
+        <div class="task-info">
+            <div class="task-info-title">📋 Пользователь: {{ user.name }}</div>
+            <div style="color: var(--text-secondary); font-size: 14px; margin-top: var(--spacing-xs);">
+                Автор: {{ user.name }}
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            <div class="warning-title">⚠️ Важно</div>
+            <div class="warning-text">
+                Ложные жалобы могут привести к ограничению вашего аккаунта. 
+                Пожалуйста, жалуйтесь только на реальные нарушения.
+            </div>
+        </div>
+        
+        <form method="POST" action="{{ url_for('moderation.report_user', user_id=user.id) }}">
+            <div class="form-group">
+                <label class="form-label">Причина жалобы *</label>
+                <div class="reason-options">
+                    <div class="reason-option">
+                        <input type="radio" id="reason_spam" name="reason" value="spam" 
+                               {% if reason == 'spam' %}checked{% endif %} required>
+                        <label for="reason_spam" class="reason-label">
+                            <strong>🚫 Спам</strong><br>
+                            <span style="font-size: 14px; opacity: 0.8;">Повторяющиеся или нежелательные объявления</span>
+                        </label>
+                    </div>
+                    
+                    <div class="reason-option">
+                        <input type="radio" id="reason_fraud" name="reason" value="fraud"
+                               {% if reason == 'fraud' %}checked{% endif %}>
+                        <label for="reason_fraud" class="reason-label">
+                            <strong>💰 Мошенничество</strong><br>
+                            <span style="font-size: 14px; opacity: 0.8;">Подозрительная или обманная деятельность</span>
+                        </label>
+                    </div>
+                    
+                    <div class="reason-option">
+                        <input type="radio" id="reason_inappropriate" name="reason" value="inappropriate"
+                               {% if reason == 'inappropriate' %}checked{% endif %}>
+                        <label for="reason_inappropriate" class="reason-label">
+                            <strong>⚠️ Неприемлемый контент</strong><br>
+                            <span style="font-size: 14px; opacity: 0.8;">Оскорбления, угрозы или запрещенный контент</span>
+                        </label>
+                    </div>
+                    
+                    <div class="reason-option">
+                        <input type="radio" id="reason_other" name="reason" value="other"
+                               {% if reason == 'other' %}checked{% endif %}>
+                        <label for="reason_other" class="reason-label">
+                            <strong>📋 Другое</strong><br>
+                            <span style="font-size: 14px; opacity: 0.8;">Другая причина</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description" class="form-label">Подробное описание *</label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    class="form-textarea" 
+                    placeholder="Опишите подробно, что вас беспокоит в этом задании..."
+                    required
+                    minlength="10"
+                    maxlength="500"
+                >{{ description if description else '' }}</textarea>
+                <p class="form-hint">Минимум 10 символов, максимум 500</p>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('reviews.user_reviews', user_id=user.id) }}" class="btn btn-secondary" style="flex: 1;">
+                    ← Отмена
+                </a>
+                <button type="submit" class="btn btn-danger" style="flex: 1;">
+                    🚨 Отправить жалобу
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
